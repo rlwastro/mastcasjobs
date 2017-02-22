@@ -12,6 +12,10 @@ Install current versions of both modules:
     pip install git+git://github.com/dfm/casjobs@master
     pip install git+git://github.com/rlwastro/mastcasjobs@master
 
+Note that this uses some features that are not in the standard pip
+version of the casjobs module, so it will probably not work using
+a simple 'pip install casjobs'.
+
 An example query that does a cone search for PS1 objects within
 50 arc-sec of coordinates (187.706,12.391):
 
