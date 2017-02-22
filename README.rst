@@ -17,7 +17,7 @@ version of the casjobs module, so it will probably not work using
 a simple 'pip install casjobs'.
 
 An example query that does a cone search for PS1 objects within
-50 arc-sec of coordinates (187.706,12.391):
+50 arc-sec of coordinates RA=187.706, Dec=12.391 (in degrees):
 
 ::
 
@@ -38,7 +38,7 @@ An example query that does a cone search for PS1 objects within
     pwd = "My super secret password"
 
     jobs = mastcasjobs.MastCasJobs(userid=wsid, password=pwd)
-    results = jobs.quick(sql, task_name="python quick test 1")
+    results = jobs.quick(query, task_name="python cone search")
     print results
 
 License
