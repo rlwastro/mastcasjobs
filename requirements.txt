@@ -1,1 +1,1 @@
-https://github.com/dfm/casjobs#egg=casjobs-0.0.2
+casjobs
