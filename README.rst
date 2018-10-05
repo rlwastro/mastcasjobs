@@ -21,6 +21,7 @@ An example query that does a cone search for PS1 objects within
 
 ::
 
+    from __future__ import print_function
     import mastcasjobs
 
     query = """select o.objID, o.raMean, o.decMean,
@@ -37,9 +38,9 @@ An example query that does a cone search for PS1 objects within
     wsid = 265306138
     pwd = "My super secret password"
 
-    jobs = mastcasjobs.MastCasJobs(userid=wsid, password=pwd)
+    jobs = mastcasjobs.MastCasJobs(userid=wsid, password=pwd, context="PanSTARRS_DR1")
     results = jobs.quick(query, task_name="python cone search")
-    print results
+    print(results)
 
 License
 -------
