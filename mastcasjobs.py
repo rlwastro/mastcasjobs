@@ -219,7 +219,7 @@ class MastCasJobs(CasJobs):
             print("{:.1f} s: Converted to {} row table".format(time.time()-t0,len(tab)))
         return tab
 
-    def get_table(self, table, format="FITS"):
+    def get_table(self, table, format="FITS", verbose=False):
         """Get possibly large table from CasJobs
         
         This runs a quick job to retrieve the table if it is not too big.
@@ -236,6 +236,8 @@ class MastCasJobs(CasJobs):
         ## Keyword Arguments
 
         * `format` (str): Format for retrieval ("FITS" or "CSV").
+        * `verbose` (bool) : Prints additional information on time to retrieve table.
+
 
         ## Returns
 
@@ -254,6 +256,7 @@ class MastCasJobs(CasJobs):
             pass
         
         # sigh, have to go through output queue
+        t0 = time.time()
         format = format.upper()
         if format not in ["FITS","CSV"]:
             # just force a good value
@@ -273,6 +276,8 @@ class MastCasJobs(CasJobs):
             r = requests.get(url)
             r.raise_for_status()
             tab = ascii.read(MastCasJobs.replacenull(r.text),format='csv')
+        if verbose:
+            print("{:.1f} s: Retrieved {} row {} table".format(time.time()-t0,len(tab),format))
         return tab
 
 
