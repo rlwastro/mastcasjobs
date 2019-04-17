@@ -8,6 +8,7 @@ from casjobs import CasJobs
 import astropy, numpy, time, sys, os, re, requests
 from astropy.table import Table
 from astropy.io import fits, ascii
+from collections import defaultdict
 import xml.etree.ElementTree as ET
 
 __all__ = ["MastCasJobs", "contexts"]
