@@ -22,7 +22,7 @@ with open("requirements.txt") as f:
 
 setup(
     name="mastcasjobs",
-    version="0.0.1",
+    version="0.0.2",
     author="Richard L. White",
     author_email="rlw@stsci.edu",
     url="https://github.com/rlwastro/mastcasjobs",
