@@ -4,6 +4,10 @@ Interface to MAST CasJobs using Dan Foreman-Mackey's casjobs.py module
 vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4 :
 """
 
+# Python 2-3 compatibility
+from __future__ import print_function
+from six import raise_from
+
 from casjobs import CasJobs
 import astropy, numpy, time, sys, os, re, requests
 from astropy.table import Table
@@ -200,7 +204,8 @@ class MastCasJobs(CasJobs):
         try:
             results = self.quick("select top 0 * from {}".format(table),context="MYDB")
         except Exception as e:
-            raise ValueError("table MyDB.{} not found".format(table)) from None
+            # raise ValueError("table MyDB.{} not found".format(table)) from None
+            raise_from(ValueError("table MyDB.{} not found".format(table)), None)
         # get table from the quick_casjobs.cgi service
         t0 = time.time()
         r = requests.post(self.fast_url, data=dict(userid=self.username, pw=self.password, table=table))
@@ -248,7 +253,8 @@ class MastCasJobs(CasJobs):
         try:
             results = self.quick("select top 0 * from {}".format(table),context="MYDB")
         except Exception as e:
-            raise ValueError("table MyDB.{} not found".format(table)) from None
+            # raise ValueError("table MyDB.{} not found".format(table)) from None
+            raise_from(ValueError("table MyDB.{} not found".format(table)), None)
         # first try to get it as a quick request, which is much faster if it works
         try:
             return self.quick("select * from {}".format(table),context="MYDB",astropy=True)
