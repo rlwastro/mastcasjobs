@@ -366,34 +366,3 @@ class MastCasJobs(CasJobs):
         results = re.sub(pat, '', results, flags=re.IGNORECASE | re.DOTALL)
         return results
 
-    def quick(self, q, context=None, task_name="quickie", system=False, noparse=False):
-        """
-        Run a quick job.
-
-        ## Arguments
-
-        * `q` (str): The SQL query.
-
-        ## Keyword Arguments
-
-        * `context` (str): Casjobs context used for this query.
-        * `task_name` (str): The task name.
-        * `system` (bool) : Whether or not to run this job as a system job (not
-          visible in the web UI or history)
-        * `noparse` (bool) : If true, does not attempt to parse the results
-
-        ## Returns
-
-        * `results` (str): The result of the job as a long string.
-
-        """
-        if not context:
-            context = self.context
-        params = {"qry": q, "context": context, "taskname": task_name,
-                "isSystem": system}
-        r = self._send_request("ExecuteQuickJob", params=params)
-        if noparse:
-            return r.text
-        else:
-            return self._parse_single(r.text, "string")
-
