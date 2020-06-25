@@ -32,7 +32,7 @@ An example query that does a cone search for PS1 objects within
     inner join MeanObject m on o.objid=m.objid and o.uniquePspsOBid=m.uniquePspsOBid
     """
 
-    # get your WSID from from <http://mastweb.stsci.edu/ps1casjobs/changedetails.aspx> after you login to Casjobs
+    # get your WSID from from <https://mastweb.stsci.edu/ps1casjobs/changedetails.aspx> after you login to Casjobs
     # pwd is your Casjobs password
     # These can also come from the CASJOBS_WSID and CASJOBS_PW environment variables
     wsid = 265306138
