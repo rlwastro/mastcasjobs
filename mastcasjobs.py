@@ -327,7 +327,7 @@ class MastCasJobs(CasJobs):
         """
         pat = re.compile(r'\[(?P<name>[^[]+)\]:(?P<datatype>.+)$')
         # probably need a boolean datatype in this list
-        tmap = defaultdict(lambda : numpy.str,
+        tmap = defaultdict(lambda : str,
                     int=numpy.int32, smallint=numpy.int16, tinyint=numpy.uint8,
                     bigint=numpy.int64, integer=numpy.int64, bit=numpy.uint8,
                     float=numpy.float64, decimal=numpy.float64, real=numpy.float32,
