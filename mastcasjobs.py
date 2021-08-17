@@ -115,7 +115,7 @@ class MastCasJobs(CasJobs):
         res = self.quick(q, context=context, task_name='listtables', system=True)
         # the first line is a header and the last is always empty
         # also, the table names have " as the first and last characters
-        return [l[1:-1]for l in res.split('\n')[1:-1]]
+        return list(res["TABLE_NAMES"])
 
     def drop_table_if_exists(self, table):
         """
@@ -327,7 +327,7 @@ class MastCasJobs(CasJobs):
         """
         pat = re.compile(r'\[(?P<name>[^[]+)\]:(?P<datatype>.+)$')
         # probably need a boolean datatype in this list
-        tmap = defaultdict(lambda : numpy.str,
+        tmap = defaultdict(lambda : str,
                     int=numpy.int32, smallint=numpy.int16, tinyint=numpy.uint8,
                     bigint=numpy.int64, integer=numpy.int64, bit=numpy.uint8,
                     float=numpy.float64, decimal=numpy.float64, real=numpy.float32,
