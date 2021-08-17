@@ -2,26 +2,39 @@ This provides a simple interface to the MAST CasJobs server (home of GALEX,
 Kepler, the Hubble Source Catalog, PanSTARRS, etc.) using Dan Foreman-Mackey's
 `casjobs <https://github.com/dfm/casjobs>`_ interface.
 
-Usage
------
+Installation
+------------
 
-Install current versions of both modules:
+Install current versions of both the ``mastcasjobs`` and ``casjobs`` modules:
 
 ::
 
-    pip install git+git://github.com/dfm/casjobs@master
-    pip install git+git://github.com/rlwastro/mastcasjobs@master
+    pip install git+https://github.com/rlwastro/mastcasjobs@master
 
-Note that this uses some features that are not in the standard pip
-version of the casjobs module, so it will probably not work using
-a simple 'pip install casjobs'.
+Note that this installs the current version of the ``casjobs`` module from github.
+The standard pip version of the ``casjobs`` module is missing some required features.
+If you have trouble getting ``mastcasjobs`` to work, try running these commands first
+to ensure you have a clean environment:
 
-An example query that does a cone search for PS1 objects within
+::
+
+    pip uninstall casjobs
+    pip uninstall mastcasjobs
+
+If you want to do development on the ``mastcasjobs`` module, clone it and then install it using:
+
+::
+
+    pip install .
+
+Usage
+-----
+
+Here is an example query that does a cone search for PS1 objects within
 50 arc-sec of coordinates RA=187.706, Dec=12.391 (in degrees):
 
 ::
 
-    from __future__ import print_function
     import mastcasjobs
 
     query = """select o.objID, o.raMean, o.decMean,
@@ -32,15 +45,43 @@ An example query that does a cone search for PS1 objects within
     inner join MeanObject m on o.objid=m.objid and o.uniquePspsOBid=m.uniquePspsOBid
     """
 
-    # get your WSID from from <https://mastweb.stsci.edu/ps1casjobs/changedetails.aspx> after you login to Casjobs
+    # user is your MAST Casjobs username
     # pwd is your Casjobs password
-    # These can also come from the CASJOBS_WSID and CASJOBS_PW environment variables
-    wsid = 265306138
+    # These can also come from the CASJOBS_USERID and CASJOBS_PW environment variables
+    # Create a Casjobs account at <https://mastweb.stsci.edu/ps1casjobs/CreateAccount.aspx>
+    #   if you do not already have one.
+
+    user = "myusername"
     pwd = "My super secret password"
 
-    jobs = mastcasjobs.MastCasJobs(userid=wsid, password=pwd, context="PanSTARRS_DR1")
+    jobs = mastcasjobs.MastCasJobs(username=user, password=pwd, context="PanSTARRS_DR2")
     results = jobs.quick(query, task_name="python cone search")
     print(results)
+
+Note that the results of the ``quick`` query are by default returned as an
+`astropy table <https://docs.astropy.org/en/stable/table/index.html>`_.
+You can add the optional parameter ``astropy=False`` to get a string instead.
+
+The ``jobs`` object has other useful methods that allow you to do almost all the queries that you
+can run using the web interface.  Use ``help(jobs.function)`` to get details.  Some of the commonly used
+functions include:
+
+:``quick``: Run short queries that execute in less than 1 minute.
+:``submit``: Submit a long-running query.
+:``status``, ``monitor``, ``cancel``: Monitor a submitted query.
+:``fast_table``: Fast retrieval of data from a MyDB table (works only on MAST Casjobs).
+:``get_table``: Retrieve a small or large MyDB table (slower but works in other Casjobs installations too). 
+:``list_tables``: List tables in MyDB (or in another context).
+:``drop_table_if_exists``: Delete a table from your MyDB (if it exists).
+
+Requirements
+------------
+
+This relies on the ``casjobs`` and ``requests`` modules.
+
+Since Python 2.7 is no longer supported, the installation of this version of the software requires 
+Python 3.5 or greater.  The software actually still runs in Python 2.7, but you will have to install it 
+manually.
 
 License
 -------
