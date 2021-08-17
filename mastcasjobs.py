@@ -115,7 +115,7 @@ class MastCasJobs(CasJobs):
         res = self.quick(q, context=context, task_name='listtables', system=True)
         # the first line is a header and the last is always empty
         # also, the table names have " as the first and last characters
-        return list(res["TABLE_NAMES"])
+        return list(res["TABLE_NAME"])
 
     def drop_table_if_exists(self, table):
         """
