@@ -47,7 +47,7 @@ class MastCasJobs(CasJobs):
       provided by the `CASJOBS_PW` environment variable.
     * `userid` (int): The WSID from your CasJobs profile. This is not used
       if `username` is specified.  Note that when this alternate login method is
-      used, the get_fast_table method will not work.  This can also be
+      used, the fast_table method will not work.  This can also be
       provided by the `CASJOBS_WSID` environment variable.
     * `request_type` (str): The type of HTTP request to use to access the
       CasJobs services.  Can be either 'GET' or 'POST'.  Typically you
@@ -202,7 +202,7 @@ class MastCasJobs(CasJobs):
             raise ValueError("Cannot use fast_table method unless you specify username when accessing CasJobs")
         # make sure the table exists
         try:
-            results = self.quick("select top 0 * from {}".format(table),context="MYDB")
+            results = self.quick("select top 0 * from [{}]".format(table),context="MYDB")
         except Exception as e:
             # raise ValueError("table MyDB.{} not found".format(table)) from None
             raise_from(ValueError("table MyDB.{} not found".format(table)), None)
