@@ -286,6 +286,31 @@ class MastCasJobs(CasJobs):
             print("{:.1f} s: Retrieved {} row {} table".format(time.time()-t0,len(tab),format))
         return tab
 
+    def upload_table(self, tablename, data, exists=False):
+        """Upload ascii CSV data into a table in MyDB
+        
+        Note there are limits to the volume of data that can be loaded in
+        a single call.  Break the data up into chunks and use the exists 
+        parameter to add each additional chunk for a large table.
+
+        ## Arguments
+
+        * `tablename` (str): Name of table in MyDB.
+        * `data` (str): String containing the CSV data to upload
+
+        ## Keyword Arguments
+
+        * `exists` (bool): If True, expects `tablename` to exist and tries to
+            load additional data into that table.  If False, creates a new table.
+            If False and table exists, an exception is raised.
+
+        ## Returns
+
+        * Nothing.
+
+        """
+        params = dict(tableName=tablename, data=data, tableExists=exists)
+        self._send_request("UploadData", params=params)
 
     @staticmethod
     def convert_quick_table(result):
