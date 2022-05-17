@@ -279,9 +279,9 @@ class MastCasJobs(CasJobs):
             tab = Table(fh[1].data)
             fh.close()
             # fix annoying astropy changed behavior that makes all columns dimension (1,)
-            for c in tab.colnames:
-                if len(tab[c].shape) > 1 and tab[c].shape[-1] == 1:
-                    tab[c] = tab[c].squeeze(axis=-1)
+            #for c in tab.colnames:
+            #    if len(tab[c].shape) > 1 and tab[c].shape[-1] == 1:
+            #        tab[c] = tab[c].squeeze(axis=-1)
         else:
             r = requests.get(url)
             r.raise_for_status()
