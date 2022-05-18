@@ -276,12 +276,11 @@ class MastCasJobs(CasJobs):
         url = job_info["OutputLoc"]
         if format == "FITS":
             fh = fits.open(url)
+            # TDIM keywords in the Casjobs FITS header are simply wrong
+            # Have to delete them to avoid bad problems in astropy.io.fits
+            del fh[1].header['TDIM*']
             tab = Table(fh[1].data)
             fh.close()
-            # fix annoying astropy changed behavior that makes all columns dimension (1,)
-            #for c in tab.colnames:
-            #    if len(tab[c].shape) > 1 and tab[c].shape[-1] == 1:
-            #        tab[c] = tab[c].squeeze(axis=-1)
         else:
             r = requests.get(url)
             r.raise_for_status()
