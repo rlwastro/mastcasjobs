@@ -267,7 +267,8 @@ class MastCasJobs(CasJobs):
         if format not in ["FITS","CSV"]:
             # just force a good value
             format = "FITS"
-        print("Making output request for {}-format data".format(format))
+        if verbose:
+            print("Making output request for {}-format data".format(format))
         job_id = self.request_output(table,format)
         status = self.monitor(job_id)
         if status[0] != 5:
