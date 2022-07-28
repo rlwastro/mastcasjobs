@@ -9,17 +9,7 @@ Install current versions of both the ``mastcasjobs`` and ``casjobs`` modules:
 
 ::
 
-    pip install git+https://github.com/rlwastro/mastcasjobs@master
-
-Note that this installs the current version of the ``casjobs`` module from github.
-The standard pip version of the ``casjobs`` module is missing some required features.
-If you have trouble getting ``mastcasjobs`` to work, try running these commands first
-to ensure you have a clean environment:
-
-::
-
-    pip uninstall casjobs
-    pip uninstall mastcasjobs
+    pip install mastcasjobs
 
 If you want to do development on the ``mastcasjobs`` module, clone it and then install it using:
 
@@ -47,7 +37,8 @@ Here is an example query that does a cone search for PS1 objects within
 
     # user is your MAST Casjobs username
     # pwd is your Casjobs password
-    # These can also come from the CASJOBS_USERID and CASJOBS_PW environment variables
+    # These can also come from the CASJOBS_USERID and CASJOBS_PW environment variables,
+    # in which case you do not need the username or password parameters.
     # Create a Casjobs account at <https://mastweb.stsci.edu/ps1casjobs/CreateAccount.aspx>
     #   if you do not already have one.
 
@@ -77,7 +68,7 @@ functions include:
 Requirements
 ------------
 
-This relies on the ``casjobs`` and ``requests`` modules.
+This relies on the ``casjobs`` (version 0.0.2 or newer) and ``requests`` modules.
 
 Since Python 2.7 is no longer supported, the installation of this version of the software requires 
 Python 3.5 or greater.  The software actually still runs in Python 2.7, but you will have to install it 
