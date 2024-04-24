@@ -14,6 +14,7 @@ from astropy.table import Table
 from astropy.io import fits, ascii
 from collections import defaultdict
 import xml.etree.ElementTree as ET
+from io import StringIO
 
 __all__ = ["MastCasJobs", "contexts"]
 
@@ -290,29 +291,76 @@ class MastCasJobs(CasJobs):
             print("{:.1f} s: Retrieved {} row {} table".format(time.time()-t0,len(tab),format))
         return tab
 
-    def upload_table(self, tablename, data, exists=False):
-        """Upload ascii CSV data into a table in MyDB
+    def upload_table(self, tablename, data, exists=False, verbose=False, sizelimit=200000000):
+        """Upload astropy.Table or ascii CSV data into a table in MyDB
         
         Note there are limits to the volume of data that can be loaded in
-        a single call.  Break the data up into chunks and use the exists 
-        parameter to add each additional chunk for a large table.
+        a single call.  If an astropy table is passed, this function automatically
+        breaks the table up into chunks to allow uploading large tables.
+
+        If the data is specified as a long CSV string, you should break the data up
+        into chunks manually, and use the exists parameter to add each additional
+        chunk.
+
+        Embedded blanks in astropy table columns are converted to underscores
+        to work around a bug in the upload interface. If data is a CSV string,
+        embedded blanks should also be removed or replaced to avoid errors.
+        (This function does not do that for you.)
 
         ## Arguments
 
         * `tablename` (str): Name of table in MyDB.
-        * `data` (str): String containing the CSV data to upload
+        * `data` (astropy.Table or str): astropy.Table or CSV string containing the data to upload
 
         ## Keyword Arguments
 
         * `exists` (bool): If True, expects `tablename` to exist and tries to
             load additional data into that table.  If False, creates a new table.
             If False and table exists, an exception is raised.
+        * `verbose` (bool): If True, prints additional info on upload.
+        * `sizelimit` (int): Maximum size for upload (in bytes).  If data is an
+            astropy.table, the upload is broken into chunks for large tables.
 
         ## Returns
 
         * Nothing.
 
         """
+        if isinstance(data, Table):
+            c = StringIO()
+            tab = data
+            tab.write(c, format="ascii.csv")
+            bdata = c.getvalue()
+            if len(bdata) > sizelimit:
+                # Data is close to limit on maximum upload size
+                # Break data up into chunks that are about 1/2 of size limit to allow
+                # for some variation in row length.  After initial call, set exists to
+                # True so additional rows are added to table.
+                block = len(tab)*(sizelimit//2)//len(bdata)
+                if block == 0:
+                    # uh-oh, this is probably trouble
+                    print("Warning: very long rows in data, upload failure may occur", file=sys.stderr)
+                    block = 1
+                # Recursively call the upload_table function.  If any very long rows are encountered,
+                # the blocks can be broken up further as needed in the recursive calls.
+                for iblock, i in enumerate(range(0, len(tab), block), start=1):
+                    self.upload_table(tablename, tab[i:i+block], exists=exists,
+                                      sizelimit=sizelimit, verbose=verbose)
+                    exists = True
+                    if verbose:
+                        print(f"Copied block {iblock} rows [{i}:{i+block}]")
+                return
+            # embedded blanks break upload interface, so replace them
+            data = bdata.replace(' ','_')
+            if verbose and data != bdata:
+                print("Blanks in table were replaced with underscores")
+            del c, bdata
+        if verbose:
+            print(f"Uploading {len(data):,}-byte data to {tablename}")
+        if len(data) > sizelimit:
+            # uh-oh, this is probably trouble
+            print(f"Warning: data length is greater than size limit ({sizelimit:,} bytes), upload failure may occur",
+                  file=sys.stderr)
         params = dict(tableName=tablename, data=data, tableExists=exists)
         self._send_request("UploadData", params=params)
 
