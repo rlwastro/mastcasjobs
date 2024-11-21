@@ -57,14 +57,17 @@ The ``jobs`` object has other useful methods that allow you to do almost all the
 can run using the web interface.  Use ``help(jobs.function)`` to get details.  Some of the commonly used
 functions include:
 
-:``quick``: Run short queries that execute in less than 1 minute.
-:``submit``: Submit a long-running query.
-:``status``, ``monitor``, ``cancel``: Monitor a submitted query.
-:``fast_table``: Fast retrieval of data from a MyDB table (works only on MAST Casjobs).
-:``get_table``: Retrieve a small or large MyDB table (slower but works in other Casjobs installations too). 
-:``list_tables``: List tables in MyDB (or in another context).
-:``drop_table_if_exists``: Delete a table from your MyDB (if it exists).
-:``upload_table``: Upload a table to your MyDB database.
++-----------+--------------+
+| Functions | Description  |
++===========+==============+
+| ``quick`` | Run short queries that execute in less than 1 minute. |
+| ``submit`` | Submit a long-running query. |
+| ``status``, ``monitor``, ``cancel`` | Monitor a submitted query. |
+| ``fast_table`` | Fast retrieval of data from a MyDB table (works only on MAST Casjobs). |
+| ``get_table`` | Retrieve a small or large MyDB table (slower but works in other Casjobs installations too).  |
+| ``list_tables`` | List tables in MyDB (or in another context). |
+| ``drop_table_if_exists`` | Delete a table from your MyDB (if it exists). |
+| ``upload_table`` | Upload a table to your MyDB database. |
 
 Requirements
 ------------
@@ -78,9 +81,13 @@ manually.
 Release Notes
 -------------
 
-:``0.0.7``:Nov 21, 2024: Use POST for queries by default, which avoids limits on the length of query strings.
-:``0.0.6``:Apr 24, 2024: Modified `upload_table()` method in MastCasJobs to allow an `astropy.table` as the data argument. 
-:``0.0.5``:Jul 28, 2022: Initial pip-installable version.
++-----------+--------------+--------------+
+| Release   | Date         | Description  |
++===========+==============+==============+
+| ``0.0.7`` | Nov 21, 2024 |  Use POST for queries by default, which avoids limits on the length of query strings. |
+| ``0.0.6`` | Apr 24, 2024 |  Modified `upload_table()` method in MastCasJobs to allow an `astropy.table` as the data argument.  |
+| ``0.0.5`` | Jul 28, 2022 |  Initial pip-installable version. |
++-----------+--------------+--------------+
 
 License
 -------
