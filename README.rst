@@ -64,6 +64,7 @@ functions include:
 :``get_table``: Retrieve a small or large MyDB table (slower but works in other Casjobs installations too). 
 :``list_tables``: List tables in MyDB (or in another context).
 :``drop_table_if_exists``: Delete a table from your MyDB (if it exists).
+:``upload_table``: Upload a table to your MyDB database.
 
 Requirements
 ------------
@@ -73,6 +74,13 @@ This relies on the ``casjobs`` (version 0.0.2 or newer) and ``requests`` modules
 Since Python 2.7 is no longer supported, the installation of this version of the software requires 
 Python 3.5 or greater.  The software actually still runs in Python 2.7, but you will have to install it 
 manually.
+
+Release Notes
+-------------
+
+:``0.0.7``:Nov 21, 2024: Use POST for queries by default, which avoids limits on the length of query strings.
+:``0.0.6``:Apr 24, 2024: Modified `upload_table()` method in MastCasJobs to allow an `astropy.table` as the data argument. 
+:``0.0.5``:Jul 28, 2022: Initial pip-installable version.
 
 License
 -------
