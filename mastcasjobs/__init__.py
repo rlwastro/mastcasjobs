@@ -8,7 +8,7 @@ vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4 :
 from __future__ import print_function
 from six import raise_from
 
-from casjobs import CasJobs
+from casjobs import CasJobs, unescape
 import astropy, numpy, time, sys, os, re, requests
 from astropy.table import Table
 from astropy.io import fits, ascii
@@ -51,10 +51,10 @@ class MastCasJobs(CasJobs):
       used, the fast_table method will not work.  This can also be
       provided by the `CASJOBS_WSID` environment variable.
     * `request_type` (str): The type of HTTP request to use to access the
-      CasJobs services.  Can be either 'GET' or 'POST'.  Typically you
-      may as well stick with 'GET', unless you want to submit some long
-      queries (>~2000 characters or something like that).  In that case,
-      you'll need 'POST' because it has no length limit.
+      CasJobs services.  Can be either 'GET' or 'POST'.  The default has
+      been switched to POST, since there is no significant penalty and that
+      allows much longer query strings. GET queries run into limits on the
+      length of URLs for big queries (>~2000 characters or something like that).
     * `context` (str): Default context that is used for queries.
     * `base_url` (str): The base URL that you'd like to use depending on the
       service that you're accessing. Default is the MAST CasJobs URL.
@@ -66,7 +66,7 @@ class MastCasJobs(CasJobs):
 
     """
     def __init__(self, username=None, password=None, userid=None,
-                 request_type="GET", context="PanSTARRS_DR1",
+                 request_type="POST", context="PanSTARRS_DR1",
                  base_url="https://mastweb.stsci.edu/ps1casjobs/services/jobs.asmx",
                  wsid_url=None, fast_url=None):
 
@@ -363,6 +363,41 @@ class MastCasJobs(CasJobs):
                   file=sys.stderr)
         params = dict(tableName=tablename, data=data, tableExists=exists)
         self._send_request("UploadData", params=params)
+
+    def _parse_error(self, text, maxlines=2):
+        """
+        Extract SQL error message from Java traceback
+
+        If the SQL error is not found, the first maxlines lines of the
+        (long) Java traceback are returned.
+        This also searches the returned text for information on URL blocking.
+
+        ### Arguments
+
+        * `text` (str): The request response (usually a Java traceback)
+        * `maxlines` (int): Maximum lines to return if not a SQL error
+
+        ## Returns
+
+        * `msg` (str): Error message with HTML entities decoded
+
+        """
+        pat = re.compile(r'System.Exception: *(?P<msg>.*) *--->',re.DOTALL)
+        mm = pat.search(text)
+        if mm:
+            msg = mm.group('msg')
+        else:
+            # default message is first few lines
+            msg = '\n'.join(text.split('\n')[:maxlines])
+            # try to extract information on blocked accesses, which may be helpful in debugging
+            i = text.find('403 Response Code')
+            if i >= 0:
+                pat = re.compile(r'<!-- (?P<msg>Please contact our technical support[^>]*) -->')
+                mm = pat.search(text[i:])
+                if mm:
+                    msg = mm.group('msg')
+        return unescape(msg)
+
 
     @staticmethod
     def convert_quick_table(result):
