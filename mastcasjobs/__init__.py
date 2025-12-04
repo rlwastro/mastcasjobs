@@ -392,7 +392,8 @@ class MastCasJobs(CasJobs):
             # try to extract information on blocked accesses, which may be helpful in debugging
             i = text.find('403 Response Code')
             if i >= 0:
-                pat = re.compile(r'<!-- (?P<msg>Please contact our technical support[^>]*) -->')
+                pat = re.compile(r'(?P<msg>Please contact our technical support with Request ID: *[^ ]*)',
+                                 flags=re.IGNORECASE)
                 mm = pat.search(text[i:])
                 if mm:
                     msg = mm.group('msg')
