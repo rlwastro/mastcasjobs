@@ -219,7 +219,7 @@ class MastCasJobs(CasJobs):
         headline = r.text.split('\n',1)[0]
         names, converters = MastCasJobs.get_converters(headline, delimiter='\t')
         # note that this service replaces NULL entries by default
-        tab = ascii.read(r.text,
+        tab = ascii.read(r.text, fast_reader=False,
                          guess=False,format='tab',names=names,converters=converters)
         if verbose:
             print("{:.1f} s: Converted to {} row table".format(time.time()-t0,len(tab)))
@@ -444,7 +444,7 @@ class MastCasJobs(CasJobs):
                     int=numpy.int32, smallint=numpy.int16, tinyint=numpy.uint8,
                     bigint=numpy.int64, integer=numpy.int64, bit=numpy.uint8,
                     float=numpy.float64, decimal=numpy.float64, real=numpy.float32,
-                    datetime=numpy.datetime64)
+                    datetime=str)
         cols = headline.split(delimiter)
         converters = {}
         names = []
